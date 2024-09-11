@@ -8,6 +8,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Security;
 
@@ -167,6 +168,17 @@ namespace Google.Protobuf
         #region Writing of values (not including tags)
 
         /// <summary>
+        /// Writes a double field value, with a tag, to the stream.
+        /// </summary>
+        /// <param name="value">The value to write</param>
+        /// <param name="fieldNumber"></param>
+        public void WriteDouble(int fieldNumber, double value)
+        {
+            uint tag = WireFormat.MakeTag(fieldNumber, WireFormat.WireType.Fixed64);
+            WriteTag(tag);
+            WriteDouble(value);
+        }
+        /// <summary>
         /// Writes a double field value, without a tag, to the stream.
         /// </summary>
         /// <param name="value">The value to write</param>
@@ -174,6 +186,18 @@ namespace Google.Protobuf
         {
             var span = new Span<byte>(buffer);
             WritingPrimitives.WriteDouble(ref span, ref state, value);
+        }
+
+        /// <summary>
+        /// Writes a float field value, with a tag, to the stream.
+        /// </summary>
+        /// <param name="value">The value to write</param>
+        /// <param name="fieldNumber"></param>
+        public void WriteFloat(int fieldNumber, float value)
+        {
+            uint tag = WireFormat.MakeTag(fieldNumber, WireFormat.WireType.Fixed32);
+            WriteTag(tag);
+            WriteFloat(value);
         }
 
         /// <summary>
@@ -190,10 +214,33 @@ namespace Google.Protobuf
         /// Writes a uint64 field value, without a tag, to the stream.
         /// </summary>
         /// <param name="value">The value to write</param>
+        /// <param name="fieldNumber"></param>
+        public void WriteUInt64(int fieldNumber, ulong value)
+        {
+            uint tag = WireFormat.MakeTag(fieldNumber, WireFormat.WireType.Varint);
+            WriteTag(tag);
+            WriteUInt64(value);
+        }
+        /// <summary>
+        /// Writes a uint64 field value, with a tag, to the stream.
+        /// </summary>
+        /// <param name="value">The value to write</param>
         public void WriteUInt64(ulong value)
         {
             var span = new Span<byte>(buffer);
             WritingPrimitives.WriteUInt64(ref span, ref state, value);
+        }
+
+        /// <summary>
+        /// Writes an int64 field value, with a tag, to the stream.
+        /// </summary>
+        /// <param name="value">The value to write</param>
+        /// <param name="fieldNumber"></param>
+        public void WriteInt64(int fieldNumber, long value)
+        {
+            uint tag = WireFormat.MakeTag(fieldNumber, WireFormat.WireType.Varint);
+            WriteTag(tag);
+            WriteInt64(value);
         }
 
         /// <summary>
@@ -207,6 +254,18 @@ namespace Google.Protobuf
         }
 
         /// <summary>
+        /// Writes an int32 field value, with a tag, to the stream.
+        /// </summary>
+        /// <param name="value">The value to write</param>
+        /// <param name="fieldNumber"></param>
+        public void WriteInt32(int fieldNumber, int value)
+        {
+            uint tag = WireFormat.MakeTag(fieldNumber, WireFormat.WireType.Varint);
+            WriteTag(tag);
+            WriteInt32(value);
+        }
+
+        /// <summary>
         /// Writes an int32 field value, without a tag, to the stream.
         /// </summary>
         /// <param name="value">The value to write</param>
@@ -214,6 +273,18 @@ namespace Google.Protobuf
         {
             var span = new Span<byte>(buffer);
             WritingPrimitives.WriteInt32(ref span, ref state, value);
+        }
+
+        /// <summary>
+        /// Writes a fixed64 field value, with a tag, to the stream.
+        /// </summary>
+        /// <param name="value">The value to write</param>
+        /// <param name="fieldNumber"></param>
+        public void WriteFixed64(int fieldNumber, ulong value)
+        {
+            uint tag = WireFormat.MakeTag(fieldNumber, WireFormat.WireType.Fixed64);
+            WriteTag(tag);
+            WriteFixed64(value);
         }
 
         /// <summary>
@@ -227,6 +298,17 @@ namespace Google.Protobuf
         }
 
         /// <summary>
+        /// Writes a fixed32 field value, with a tag, to the stream.
+        /// </summary>
+        /// <param name="value">The value to write</param>
+        /// <param name="fieldNumber"></param>
+        public void WriteFixed32(int fieldNumber, uint value)
+        {
+            uint tag = WireFormat.MakeTag(fieldNumber, WireFormat.WireType.Fixed32);
+            WriteTag(tag);
+            WriteFixed32(value);
+        }
+        /// <summary>
         /// Writes a fixed32 field value, without a tag, to the stream.
         /// </summary>
         /// <param name="value">The value to write</param>
@@ -234,6 +316,18 @@ namespace Google.Protobuf
         {
             var span = new Span<byte>(buffer);
             WritingPrimitives.WriteFixed32(ref span, ref state, value);
+        }
+
+        /// <summary>
+        /// Writes a bool field value, with a tag, to the stream.
+        /// </summary>
+        /// <param name="value">The value to write</param>
+        /// <param name="fieldNumber"></param>
+        public void WriteBool(int fieldNumber, bool value)
+        {
+            uint tag = WireFormat.MakeTag(fieldNumber, WireFormat.WireType.Varint);
+            WriteTag(tag);
+            WriteBool(value);
         }
 
         /// <summary>
@@ -251,12 +345,478 @@ namespace Google.Protobuf
         /// The data is length-prefixed.
         /// </summary>
         /// <param name="value">The value to write</param>
+        /// <param name="fieldNumber"></param>
+        public void WriteString(int fieldNumber, string value)
+        {
+            uint tag = WireFormat.MakeTag(fieldNumber, WireFormat.WireType.LengthDelimited);
+            WriteTag(tag);
+            WriteString(value);
+        }
+
+        /// <summary>
+        /// Writes a string field value, without a tag, to the stream.
+        /// The data is length-prefixed.
+        /// </summary>
+        /// <param name="value">The value to write</param>
         public void WriteString(string value)
         {
             var span = new Span<byte>(buffer);
             WritingPrimitives.WriteString(ref span, ref state, value);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldNumber"></param>
+        /// <param name="list"></param>
+        public void WriteStringArray(int fieldNumber, IEnumerable<string> list)
+        {
+            foreach (var value in list)
+            {
+                WriteString(fieldNumber, value);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldNumber"></param>
+        /// <param name="list"></param>
+        public void WriteBytesArray(int fieldNumber, IEnumerable<ByteString> list)
+        {
+            foreach (var value in list)
+            {
+                WriteBytes(fieldNumber, value);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldNumber"></param>
+        /// <param name="list"></param>
+        /// <param name="packed"></param>
+        public void WriteBoolArray(int fieldNumber, IEnumerable<bool> list, bool packed = true)
+        {
+            if (packed)
+            {
+                WriteTag(WireFormat.MakeTag(fieldNumber, WireFormat.WireType.LengthDelimited));
+                int size = 0;
+                foreach(var i in list)
+                {
+                    size += ComputeBoolSize(i);
+                }
+                WriteLength(size);
+                foreach(var i in list)
+                {
+                    WriteBool(i);
+                }
+            }
+            else
+            {
+                foreach (var value in list)
+                {
+                    WriteBool(fieldNumber, value);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldNumber"></param>
+        /// <param name="list"></param>
+        /// <param name="packed"></param>
+        public void WriteInt32Array(int fieldNumber, IEnumerable<int> list, bool packed = true)
+        {
+            if (packed)
+            {
+                WriteTag(WireFormat.MakeTag(fieldNumber, WireFormat.WireType.LengthDelimited));
+                int size = 0;
+                foreach (var i in list)
+                {
+                    size += ComputeInt32Size(i);
+                }
+                WriteLength(size);
+                foreach (var i in list)
+                {
+                    WriteInt32(i);
+                }
+            }
+            else
+            {
+                foreach (var value in list)
+                {
+                    WriteInt32(fieldNumber, value);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldNumber"></param>
+        /// <param name="list"></param>
+        /// <param name="packed"></param>
+        public void WriteSInt32Array(int fieldNumber, IEnumerable<int> list, bool packed = true)
+        {
+            if (packed)
+            {
+                WriteTag(WireFormat.MakeTag(fieldNumber, WireFormat.WireType.LengthDelimited));
+                int size = 0;
+                foreach (var i in list)
+                {
+                    size += ComputeSInt32Size(i);
+                }
+                WriteLength(size);
+                foreach (var i in list)
+                {
+                    WriteSInt32(i);
+                }
+            }
+            else
+            {
+                foreach (var value in list)
+                {
+                    WriteSInt32(fieldNumber, value);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldNumber"></param>
+        /// <param name="list"></param>
+        /// <param name="packed"></param>
+        public void WriteUInt32Array(int fieldNumber, IEnumerable<uint> list, bool packed = true)
+        {
+            if (packed)
+            {
+                WriteTag(WireFormat.MakeTag(fieldNumber, WireFormat.WireType.LengthDelimited));
+                int size = 0;
+                foreach (var i in list)
+                {
+                    size += ComputeUInt32Size(i);
+                }
+                WriteLength(size);
+                foreach (var i in list)
+                {
+                    WriteUInt32(i);
+                }
+            }
+            else
+            {
+                foreach (var value in list)
+                {
+                    WriteUInt32(fieldNumber, value);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldNumber"></param>
+        /// <param name="list"></param>
+        /// <param name="packed"></param>
+        public void WriteFixed32Array(int fieldNumber, IEnumerable<uint> list, bool packed = true)
+        {
+            if (packed)
+            {
+                WriteTag(WireFormat.MakeTag(fieldNumber, WireFormat.WireType.LengthDelimited));
+                int size = 0;
+                foreach (var i in list)
+                {
+                    size += ComputeFixed32Size(i);
+                }
+                WriteLength(size);
+                foreach (var i in list)
+                {
+                    WriteFixed32(i);
+                }
+            }
+            else
+            {
+                foreach (var value in list)
+                {
+                    WriteFixed32(fieldNumber, value);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldNumber"></param>
+        /// <param name="list"></param>
+        /// <param name="packed"></param>
+        public void WriteSFixed32Array(int fieldNumber, IEnumerable<int> list, bool packed = true)
+        {
+            if (packed)
+            {
+                WriteTag(WireFormat.MakeTag(fieldNumber, WireFormat.WireType.LengthDelimited));
+                int size = 0;
+                foreach (var i in list)
+                {
+                    size += ComputeSFixed32Size(i);
+                }
+                WriteLength(size);
+                foreach (var i in list)
+                {
+                    WriteSFixed32(i);
+                }
+            }
+            else
+            {
+                foreach (var value in list)
+                {
+                    WriteSFixed32(fieldNumber, value);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldNumber"></param>
+        /// <param name="list"></param>
+        /// <param name="packed"></param>
+        public void WriteInt64Array(int fieldNumber, IEnumerable<long> list, bool packed = true)
+        {
+            if (packed)
+            {
+                WriteTag(WireFormat.MakeTag(fieldNumber, WireFormat.WireType.LengthDelimited));
+                int size = 0;
+                foreach (var i in list)
+                {
+                    size += ComputeInt64Size(i);
+                }
+                WriteLength(size);
+                foreach (var i in list)
+                {
+                    WriteInt64(i);
+                }
+            }
+            else
+            {
+                foreach (var value in list)
+                {
+                    WriteInt64(fieldNumber, value);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldNumber"></param>
+        /// <param name="list"></param>
+        /// <param name="packed"></param>
+        public void WriteSInt64Array(int fieldNumber, IEnumerable<long> list, bool packed = true)
+        {
+            if (packed)
+            {
+                WriteTag(WireFormat.MakeTag(fieldNumber, WireFormat.WireType.LengthDelimited));
+                int size = 0;
+                foreach (var i in list)
+                {
+                    size += ComputeSInt64Size(i);
+                }
+                WriteLength(size);
+                foreach (var i in list)
+                {
+                    WriteSInt64(i);
+                }
+            }
+            else
+            {
+                foreach (var value in list)
+                {
+                    WriteSInt64(fieldNumber, value);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldNumber"></param>
+        /// <param name="list"></param>
+        /// <param name="packed"></param>
+        public void WriteUInt64Array(int fieldNumber, IEnumerable<ulong> list, bool packed = true)
+        {
+            if (packed)
+            {
+                WriteTag(WireFormat.MakeTag(fieldNumber, WireFormat.WireType.LengthDelimited));
+                int size = 0;
+                foreach (var i in list)
+                {
+                    size += ComputeUInt64Size(i);
+                }
+                WriteLength(size);
+                foreach (var i in list)
+                {
+                    WriteUInt64(i);
+                }
+            }
+            else
+            {
+                foreach (var value in list)
+                {
+                    WriteUInt64(fieldNumber, value);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldNumber"></param>
+        /// <param name="list"></param>
+        /// <param name="packed"></param>
+        public void WriteFixed64Array(int fieldNumber, IEnumerable<ulong> list, bool packed = true)
+        {
+            if (packed)
+            {
+                WriteTag(WireFormat.MakeTag(fieldNumber, WireFormat.WireType.LengthDelimited));
+                int size = 0;
+                foreach (var i in list)
+                {
+                    size += ComputeFixed64Size(i);
+                }
+                WriteLength(size);
+                foreach (var i in list)
+                {
+                    WriteFixed64(i);
+                }
+            }
+            else
+            {
+                foreach (var value in list)
+                {
+                    WriteFixed64(fieldNumber, value);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldNumber"></param>
+        /// <param name="list"></param>
+        /// <param name="packed"></param>
+        public void WriteSFixed64Array(int fieldNumber, IEnumerable<long> list, bool packed = true)
+        {
+            if (packed)
+            {
+                WriteTag(WireFormat.MakeTag(fieldNumber, WireFormat.WireType.LengthDelimited));
+                int size = 0;
+                foreach (var i in list)
+                {
+                    size += ComputeSFixed64Size(i);
+                }
+                WriteLength(size);
+                foreach (var i in list)
+                {
+                    WriteSFixed64(i);
+                }
+            }
+            else
+            {
+                foreach (var value in list)
+                {
+                    WriteSFixed64(fieldNumber, value);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldNumber"></param>
+        /// <param name="list"></param>
+        /// <param name="packed"></param>
+        public void WriteDoubleArray(int fieldNumber, IEnumerable<double> list, bool packed = true)
+        {
+            if (packed)
+            {
+                WriteTag(WireFormat.MakeTag(fieldNumber, WireFormat.WireType.LengthDelimited));
+                int size = 0;
+                foreach (var i in list)
+                {
+                    size += ComputeDoubleSize(i);
+                }
+                WriteLength(size);
+                foreach (var i in list)
+                {
+                    WriteDouble(i);
+                }
+            }
+            else
+            {
+                foreach (var value in list)
+                {
+                    WriteDouble(fieldNumber, value);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldNumber"></param>
+        /// <param name="list"></param>
+        /// <param name="packed"></param>
+        public void WriteFloatArray(int fieldNumber, IEnumerable<float> list, bool packed = true)
+        {
+            if (packed)
+            {
+                WriteTag(WireFormat.MakeTag(fieldNumber, WireFormat.WireType.LengthDelimited));
+                int size = 0;
+                foreach (var i in list)
+                {
+                    size += ComputeFloatSize(i);
+                }
+                WriteLength(size);
+                foreach (var i in list)
+                {
+                    WriteFloat(i);
+                }
+            }
+            else
+            {
+                foreach (var value in list)
+                {
+                    WriteFloat(fieldNumber, value);
+                }
+            }
+        }
+
+        public void WriteEnumArray(int fieldNumber, IEnumerable<int> list, bool packed = true)
+        {
+            if (packed)
+            {
+                WriteTag(WireFormat.MakeTag(fieldNumber, WireFormat.WireType.LengthDelimited));
+                int size = 0;
+                foreach (var i in list)
+                {
+                    size += ComputeEnumSize(i);
+                }
+                WriteLength(size);
+                foreach (var i in list)
+                {
+                    WriteEnum(i);
+                }
+            }
+            else
+            {
+                foreach (int value in list)
+                {
+                    WriteEnum(fieldNumber, value);
+                }
+            }
+        }
         /*
         /// <summary>
         /// Writes a message, without a tag, to the stream.
@@ -321,6 +881,18 @@ namespace Google.Protobuf
         }
         */
         /// <summary>
+        /// Write a byte string, with a tag, to the stream.
+        /// The data is length-prefixed.
+        /// </summary>
+        /// <param name="value">The value to write</param>
+        /// <param name="fieldNumber"></param>
+        public void WriteBytes(int fieldNumber, ByteString value)
+        {
+            uint tag = WireFormat.MakeTag(fieldNumber, WireFormat.WireType.LengthDelimited);
+            WriteTag(tag);
+            WriteBytes(value);
+        }
+        /// <summary>
         /// Write a byte string, without a tag, to the stream.
         /// The data is length-prefixed.
         /// </summary>
@@ -332,6 +904,17 @@ namespace Google.Protobuf
         }
 
         /// <summary>
+        /// Writes a uint32 value, with a tag, to the stream.
+        /// </summary>
+        /// <param name="value">The value to write</param>
+        /// <param name="fieldNumber"></param>
+        public void WriteUInt32(int fieldNumber, uint value)
+        {
+            uint tag = WireFormat.MakeTag(fieldNumber, WireFormat.WireType.Varint);
+            WriteTag(tag);
+            WriteUInt32(value);
+        }
+        /// <summary>
         /// Writes a uint32 value, without a tag, to the stream.
         /// </summary>
         /// <param name="value">The value to write</param>
@@ -339,6 +922,18 @@ namespace Google.Protobuf
         {
             var span = new Span<byte>(buffer);
             WritingPrimitives.WriteUInt32(ref span, ref state, value);
+        }
+
+        /// <summary>
+        /// Writes an enum value, with a tag, to the stream.
+        /// </summary>
+        /// <param name="value">The value to write</param>
+        /// <param name="fieldNumber"></param>
+        public void WriteEnum(int fieldNumber, int value)
+        {
+            uint tag = WireFormat.MakeTag(fieldNumber, WireFormat.WireType.Varint);
+            WriteTag(tag);
+            WriteEnum(value);
         }
 
         /// <summary>
@@ -352,6 +947,17 @@ namespace Google.Protobuf
         }
 
         /// <summary>
+        /// Writes an sfixed32 value, with a tag, to the stream.
+        /// </summary>
+        /// <param name="value">The value to write.</param>
+        /// <param name="fieldNumber"></param>
+        public void WriteSFixed32(int fieldNumber, int value)
+        {
+            uint tag = WireFormat.MakeTag(fieldNumber, WireFormat.WireType.Fixed32);
+            WriteTag(tag);
+            WriteSFixed32(value);
+        }
+        /// <summary>
         /// Writes an sfixed32 value, without a tag, to the stream.
         /// </summary>
         /// <param name="value">The value to write.</param>
@@ -359,6 +965,18 @@ namespace Google.Protobuf
         {
             var span = new Span<byte>(buffer);
             WritingPrimitives.WriteSFixed32(ref span, ref state, value);
+        }
+
+        /// <summary>
+        /// Writes an sfixed64 value, with a tag, to the stream.
+        /// </summary>
+        /// <param name="value">The value to write</param>
+        /// <param name="fieldNumber"></param>
+        public void WriteSFixed64(int fieldNumber, long value)
+        {
+            uint tag = WireFormat.MakeTag(fieldNumber, WireFormat.WireType.Fixed64);
+            WriteTag(tag);
+            WriteSFixed64(value);
         }
 
         /// <summary>
@@ -375,10 +993,34 @@ namespace Google.Protobuf
         /// Writes an sint32 value, without a tag, to the stream.
         /// </summary>
         /// <param name="value">The value to write</param>
+        /// <param name="fieldNumber"></param>
+        public void WriteSInt32(int fieldNumber, int value)
+        {
+            uint tag = WireFormat.MakeTag(fieldNumber, WireFormat.WireType.Varint);
+            WriteTag(tag);
+            WriteSInt32(value);
+        }
+
+        /// <summary>
+        /// Writes an sint32 value, without a tag, to the stream.
+        /// </summary>
+        /// <param name="value">The value to write</param>
         public void WriteSInt32(int value)
         {
             var span = new Span<byte>(buffer);
             WritingPrimitives.WriteSInt32(ref span, ref state, value);
+        }
+
+        /// <summary>
+        /// Writes an sint64 value, without a tag, to the stream.
+        /// </summary>
+        /// <param name="value">The value to write</param>
+        /// <param name="fieldNumber"></param>
+        public void WriteSInt64(int fieldNumber, long value)
+        {
+            uint tag = WireFormat.MakeTag(fieldNumber, WireFormat.WireType.Varint);
+            WriteTag(tag);
+            WriteSInt64(value);
         }
 
         /// <summary>

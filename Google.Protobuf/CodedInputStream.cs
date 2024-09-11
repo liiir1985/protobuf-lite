@@ -9,6 +9,7 @@
 
 using Google.Protobuf.Collections;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Security;
 
@@ -54,6 +55,10 @@ namespace Google.Protobuf
         /// </summary>
         private ParserInternalState state;
 
+        private uint lastTag = 0;
+
+        private uint nextTag = 0;
+        private bool hasNextTag = false;
         internal const int DefaultRecursionLimit = 100;
         internal const int DefaultSizeLimit = Int32.MaxValue;
         internal const int BufferSize = 4096;
@@ -494,6 +499,288 @@ namespace Google.Protobuf
         {
             return ParsingPrimitives.DecodeZigZag64(ReadRawVarint64());
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldTag"></param>
+        /// <param name="list"></param>
+        public void ReadStringArray(uint fieldTag, ICollection<string> list)
+        {
+            string tmp = null;
+            do
+            {
+                tmp = ReadString();
+                list.Add(tmp);
+            } while (ContinueArray(fieldTag));
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldTag"></param>
+        /// <param name="list"></param>
+        public void ReadInt32Array(uint fieldTag, ICollection<int> list)
+        {
+            bool isPacked;
+            int holdLimit;
+            if (BeginArray(fieldTag, out isPacked, out holdLimit))
+            {
+                int tmp = 0;
+                do
+                {
+                    tmp = ReadInt32();
+                    list.Add(tmp);
+                } while (ContinueArray(fieldTag, isPacked, holdLimit));
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldTag"></param>
+        /// <param name="list"></param>
+        public void ReadSInt32Array(uint fieldTag, ICollection<int> list)
+        {
+            bool isPacked;
+            int holdLimit;
+            if (BeginArray(fieldTag, out isPacked, out holdLimit))
+            {
+                int tmp = 0;
+                do
+                {
+                    tmp = ReadSInt32();
+                    list.Add(tmp);
+                } while (ContinueArray(fieldTag, isPacked, holdLimit));
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldTag"></param>
+        /// <param name="list"></param>
+        public void ReadUInt32Array(uint fieldTag, ICollection<uint> list)
+        {
+            bool isPacked;
+            int holdLimit;
+            if (BeginArray(fieldTag, out isPacked, out holdLimit))
+            {
+                uint tmp = 0;
+                do
+                {
+                    tmp = ReadUInt32();
+                    list.Add(tmp);
+                } while (ContinueArray(fieldTag, isPacked, holdLimit));
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldTag"></param>
+        /// <param name="list"></param>
+        public void ReadFixed32Array(uint fieldTag, ICollection<uint> list)
+        {
+            bool isPacked;
+            int holdLimit;
+            if (BeginArray(fieldTag, out isPacked, out holdLimit))
+            {
+                uint tmp = 0;
+                do
+                {
+                    tmp = ReadFixed32();
+                    list.Add(tmp);
+                } while (ContinueArray(fieldTag, isPacked, holdLimit));
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldTag"></param>
+        /// <param name="list"></param>
+        public void ReadSFixed32Array(uint fieldTag, ICollection<int> list)
+        {
+            bool isPacked;
+            int holdLimit;
+            if (BeginArray(fieldTag, out isPacked, out holdLimit))
+            {
+                int tmp = 0;
+                do
+                {
+                    tmp = ReadSFixed32();
+                    list.Add(tmp);
+                } while (ContinueArray(fieldTag, isPacked, holdLimit));
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldTag"></param>
+        /// <param name="list"></param>
+        public void ReadInt64Array(uint fieldTag, ICollection<long> list)
+        {
+            bool isPacked;
+            int holdLimit;
+            if (BeginArray(fieldTag, out isPacked, out holdLimit))
+            {
+                long tmp = 0;
+                do
+                {
+                    tmp = ReadInt64();
+                    list.Add(tmp);
+                } while (ContinueArray(fieldTag, isPacked, holdLimit));
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldTag"></param>
+        /// <param name="list"></param>
+        public void ReadSInt64Array(uint fieldTag, ICollection<long> list)
+        {
+            bool isPacked;
+            int holdLimit;
+            if (BeginArray(fieldTag, out isPacked, out holdLimit))
+            {
+                long tmp = 0;
+                do
+                {
+                    tmp = ReadSInt64();
+                    list.Add(tmp);
+                } while (ContinueArray(fieldTag, isPacked, holdLimit));
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldTag"></param>
+        /// <param name="list"></param>
+        public void ReadUInt64Array(uint fieldTag, ICollection<ulong> list)
+        {
+            bool isPacked;
+            int holdLimit;
+            if (BeginArray(fieldTag, out isPacked, out holdLimit))
+            {
+                ulong tmp = 0;
+                do
+                {
+                    tmp = ReadUInt64();
+                    list.Add(tmp);
+                } while (ContinueArray(fieldTag, isPacked, holdLimit));
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldTag"></param>
+        /// <param name="list"></param>
+        public void ReadFixed64Array(uint fieldTag, ICollection<ulong> list)
+        {
+            bool isPacked;
+            int holdLimit;
+            if (BeginArray(fieldTag, out isPacked, out holdLimit))
+            {
+                ulong tmp = 0;
+                do
+                {
+                    tmp = ReadFixed64();
+                    list.Add(tmp);
+                } while (ContinueArray(fieldTag, isPacked, holdLimit));
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldTag"></param>
+        /// <param name="list"></param>
+        public void ReadSFixed64Array(uint fieldTag, ICollection<long> list)
+        {
+            bool isPacked;
+            int holdLimit;
+            if (BeginArray(fieldTag, out isPacked, out holdLimit))
+            {
+                long tmp = 0;
+                do
+                {
+                    tmp = ReadSFixed64();
+                    list.Add(tmp);
+                } while (ContinueArray(fieldTag, isPacked, holdLimit));
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldTag"></param>
+        /// <param name="list"></param>
+        public void ReadDoubleArray(uint fieldTag, ICollection<double> list)
+        {
+            bool isPacked;
+            int holdLimit;
+            if (BeginArray(fieldTag, out isPacked, out holdLimit))
+            {
+                double tmp = 0;
+                do
+                {
+                    tmp = ReadDouble();
+                    list.Add(tmp);
+                } while (ContinueArray(fieldTag, isPacked, holdLimit));
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldTag"></param>
+        /// <param name="list"></param>
+        public void ReadFloatArray(uint fieldTag, ICollection<float> list)
+        {
+            bool isPacked;
+            int holdLimit;
+            if (BeginArray(fieldTag, out isPacked, out holdLimit))
+            {
+                float tmp = 0;
+                do
+                {
+                    tmp = ReadFloat();
+                    list.Add(tmp);
+                } while (ContinueArray(fieldTag, isPacked, holdLimit));
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldTag"></param>
+        /// <param name="list"></param>
+        public void ReadEnumArray(uint fieldTag, ICollection<int> list)
+        {
+            WireFormat.WireType wformat = WireFormat.GetTagWireType(fieldTag);
+
+            // 2.3 allows packed form even if the field is not declared packed.
+            if (wformat == WireFormat.WireType.LengthDelimited)
+            {
+                int length = (int)(ReadRawVarint32() & int.MaxValue);
+                int limit = PushLimit(length);
+                while (!ReachedLimit)
+                {
+                    list.Add(ReadEnum());
+                }
+                PopLimit(limit);
+            }
+            else
+            {
+                do
+                {
+                    list.Add(ReadEnum());
+                } while (ContinueArray(fieldTag));
+            }
+        }
 
         /// <summary>
         /// Reads a length for length-delimited data.
@@ -519,7 +806,71 @@ namespace Google.Protobuf
             return ParsingPrimitives.MaybeConsumeTag(ref span, ref state, tag);
         }
 
-#endregion
+        private bool BeginArray(uint fieldTag, out bool isPacked, out int oldLimit)
+        {
+            isPacked = WireFormat.GetTagWireType(fieldTag) == WireFormat.WireType.LengthDelimited;
+
+            if (isPacked)
+            {
+                int length = (int)(ReadRawVarint32() & int.MaxValue);
+                if (length > 0)
+                {
+                    oldLimit = PushLimit(length);
+                    return true;
+                }
+                oldLimit = -1;
+                return false; //packed but empty
+            }
+
+            oldLimit = -1;
+            return true;
+        }
+        /// <summary>
+        /// Returns true if the next tag is also part of the same unpacked array.
+        /// </summary>
+        private bool ContinueArray(uint currentTag)
+        {
+            uint next = PeekTag();
+            hasNextTag = next != 0;
+            if (hasNextTag)
+            {
+                if (next == currentTag)
+                {
+                    hasNextTag = false;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Returns true if the next tag is also part of the same array, which may or may not be packed.
+        /// </summary>
+        private bool ContinueArray(uint currentTag, bool packed, int oldLimit)
+        {
+            if (packed)
+            {
+                if (ReachedLimit)
+                {
+                    PopLimit(oldLimit);
+                    return false;
+                }
+                return true;
+            }
+
+            uint next = PeekTag();
+            hasNextTag = next != 0;
+            if (hasNextTag)
+            {
+                if (next == currentTag)
+                {
+                    hasNextTag = false;
+                    return true;
+                }
+            }
+            return false;
+        }
+        #endregion
 
         #region Underlying reading primitives
 
@@ -585,7 +936,7 @@ namespace Google.Protobuf
         /// limit is returned.
         /// </summary>
         /// <returns>The old limit.</returns>
-        internal int PushLimit(int byteLimit)
+        public int PushLimit(int byteLimit)
         {
             return SegmentedBufferHelper.PushLimit(ref state, byteLimit);
         }
@@ -593,7 +944,7 @@ namespace Google.Protobuf
         /// <summary>
         /// Discards the current limit, returning the previous limit.
         /// </summary>
-        internal void PopLimit(int oldLimit)
+        public void PopLimit(int oldLimit)
         {
             SegmentedBufferHelper.PopLimit(ref state, oldLimit);
         }
