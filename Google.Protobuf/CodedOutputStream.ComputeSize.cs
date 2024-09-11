@@ -33,12 +33,34 @@ namespace Google.Protobuf
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldNumber"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static int ComputeDoubleSize(int fieldNumber, double value)
+        {
+            return DoubleSize + ComputeTagSize(fieldNumber);
+        }
+
+        /// <summary>
         /// Computes the number of bytes that would be needed to encode a
         /// float field, including the tag.
         /// </summary>
         public static int ComputeFloatSize(float value)
         {
             return FloatSize;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldNumber"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static int ComputeFloatSize(int fieldNumber, float value)
+        {
+            return FloatSize + ComputeTagSize(fieldNumber);
         }
 
         /// <summary>
@@ -49,7 +71,16 @@ namespace Google.Protobuf
         {
             return ComputeRawVarint64Size(value);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldNumber"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static int ComputeUInt64Size(int fieldNumber, ulong value)
+        {
+            return ComputeRawVarint64Size(value) + ComputeTagSize(fieldNumber);
+        }
         /// <summary>
         /// Computes the number of bytes that would be needed to encode an
         /// int64 field, including the tag.
@@ -57,6 +88,17 @@ namespace Google.Protobuf
         public static int ComputeInt64Size(long value)
         {
             return ComputeRawVarint64Size((ulong) value);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldNumber"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static int ComputeInt64Size(int fieldNumber, long value)
+        {
+            return ComputeRawVarint64Size((ulong)value) + ComputeTagSize(fieldNumber);
         }
 
         /// <summary>
@@ -77,12 +119,34 @@ namespace Google.Protobuf
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldNumber"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static int ComputeInt32Size(int fieldNumber, int value)
+        {
+            return ComputeInt32Size(value) + ComputeTagSize(fieldNumber);
+        }
+
+        /// <summary>
         /// Computes the number of bytes that would be needed to encode a
         /// fixed64 field, including the tag.
         /// </summary>
         public static int ComputeFixed64Size(ulong value)
         {
             return LittleEndian64Size;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldNumber"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static int ComputeFixed64Size(int fieldNumber, ulong value)
+        {
+            return LittleEndian64Size + ComputeTagSize(fieldNumber);
         }
 
         /// <summary>
@@ -95,12 +159,34 @@ namespace Google.Protobuf
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldNumber"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static int ComputeFixed32Size(int fieldNumber, uint value)
+        {
+            return LittleEndian32Size + ComputeTagSize(fieldNumber);
+        }
+
+        /// <summary>
         /// Computes the number of bytes that would be needed to encode a
         /// bool field, including the tag.
         /// </summary>
         public static int ComputeBoolSize(bool value)
         {
             return BoolSize;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldNumber"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static int ComputeBoolSize(int fieldNumber, bool value)
+        {
+            return BoolSize + ComputeTagSize(fieldNumber);
         }
 
         /// <summary>
@@ -111,6 +197,17 @@ namespace Google.Protobuf
         {
             int byteArraySize = WritingPrimitives.Utf8Encoding.GetByteCount(value);
             return ComputeLengthSize(byteArraySize) + byteArraySize;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldNumber"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static int ComputeStringSize(int fieldNumber, String value)
+        {
+           return ComputeStringSize(value) + ComputeTagSize(fieldNumber);
         }
 
         /*
@@ -134,6 +231,16 @@ namespace Google.Protobuf
         }
         */
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldNumber"></param>
+        /// <param name="messageSize"></param>
+        /// <returns></returns>
+        public static int ComputeMessageSize(int fieldNumber, int messageSize)
+        {
+            return ComputeLengthSize(messageSize) + messageSize + ComputeTagSize(fieldNumber);
+        }
+        /// <summary>
         /// Computes the number of bytes that would be needed to encode a
         /// bytes field, including the tag.
         /// </summary>
@@ -143,12 +250,34 @@ namespace Google.Protobuf
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldNumber"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static int ComputeBytesSize(int fieldNumber, ByteString value)
+        {
+            return ComputeBytesSize(value) + ComputeTagSize(fieldNumber);
+        }
+
+        /// <summary>
         /// Computes the number of bytes that would be needed to encode a
         /// uint32 field, including the tag.
         /// </summary>
         public static int ComputeUInt32Size(uint value)
         {
             return ComputeRawVarint32Size(value);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldNumber"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static int ComputeUInt32Size(int fieldNumber, uint value)
+        {
+            return ComputeRawVarint32Size(value) + ComputeTagSize(fieldNumber);
         }
 
         /// <summary>
@@ -163,12 +292,35 @@ namespace Google.Protobuf
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldNumber"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static int ComputeEnumSize(int fieldNumber, int value)
+        {
+            // Currently just a pass-through, but it's nice to separate it logically.
+            return ComputeInt32Size(value) + ComputeTagSize(fieldNumber);
+        }
+
+        /// <summary>
         /// Computes the number of bytes that would be needed to encode an
         /// sfixed32 field, including the tag.
         /// </summary>
         public static int ComputeSFixed32Size(int value)
         {
             return LittleEndian32Size;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldNumber"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static int ComputeSFixed32Size(int fieldNumber, int value)
+        {
+            return LittleEndian32Size + ComputeTagSize(fieldNumber);
         }
 
         /// <summary>
@@ -181,6 +333,17 @@ namespace Google.Protobuf
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldNumber"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static int ComputeSFixed64Size(int fieldNumber, long value)
+        {
+            return LittleEndian64Size + ComputeTagSize(fieldNumber);
+        }
+
+        /// <summary>
         /// Computes the number of bytes that would be needed to encode an
         /// sint32 field, including the tag.
         /// </summary>
@@ -190,12 +353,34 @@ namespace Google.Protobuf
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldNumber"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static int ComputeSInt32Size(int fieldNumber, int value)
+        {
+            return ComputeRawVarint32Size(WritingPrimitives.EncodeZigZag32(value)) + ComputeTagSize(fieldNumber);
+        }
+
+        /// <summary>
         /// Computes the number of bytes that would be needed to encode an
         /// sint64 field, including the tag.
         /// </summary>
         public static int ComputeSInt64Size(long value)
         {
             return ComputeRawVarint64Size(WritingPrimitives.EncodeZigZag64(value));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldNumber"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static int ComputeSInt64Size(int fieldNumber, long value)
+        {
+            return ComputeRawVarint64Size(WritingPrimitives.EncodeZigZag64(value)) + ComputeTagSize(fieldNumber);
         }
 
         /// <summary>

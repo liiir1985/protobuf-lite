@@ -368,6 +368,16 @@ namespace Google.Protobuf
         /// 
         /// </summary>
         /// <param name="fieldNumber"></param>
+        /// <param name="size"></param>
+        public void WriteMessageHeader(int fieldNumber, int size)
+        {
+            WriteTag(fieldNumber, WireFormat.WireType.LengthDelimited);
+            WriteRawVarint32((uint)size);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldNumber"></param>
         /// <param name="list"></param>
         public void WriteStringArray(int fieldNumber, IEnumerable<string> list)
         {
@@ -793,6 +803,12 @@ namespace Google.Protobuf
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldNumber"></param>
+        /// <param name="list"></param>
+        /// <param name="packed"></param>
         public void WriteEnumArray(int fieldNumber, IEnumerable<int> list, bool packed = true)
         {
             if (packed)

@@ -513,6 +513,41 @@ namespace Google.Protobuf
                 list.Add(tmp);
             } while (ContinueArray(fieldTag));
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldTag"></param>
+        /// <param name="list"></param>
+        public void ReadBytesArray(uint fieldTag, ICollection<ByteString> list)
+        {
+            ByteString tmp = null;
+            do
+            {
+                tmp = ReadBytes();
+                list.Add(tmp);
+            } while (ContinueArray(fieldTag));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldTag"></param>
+        /// <param name="list"></param>
+        public void ReadBoolArray(uint fieldTag, ICollection<bool> list)
+        {
+            bool isPacked;
+            int holdLimit;
+            if (BeginArray(fieldTag, out isPacked, out holdLimit))
+            {
+                bool tmp = false;
+                do
+                {
+                    tmp = ReadBool();
+                    list.Add(tmp);
+                } while (ContinueArray(fieldTag, isPacked, holdLimit));
+            }
+        }
         /// <summary>
         /// 
         /// </summary>
