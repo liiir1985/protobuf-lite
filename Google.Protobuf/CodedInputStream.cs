@@ -54,11 +54,6 @@ namespace Google.Protobuf
         /// parsing primitives.
         /// </summary>
         private ParserInternalState state;
-
-        private uint lastTag = 0;
-
-        private uint nextTag = 0;
-        private bool hasNextTag = false;
         internal const int DefaultRecursionLimit = 100;
         internal const int DefaultSizeLimit = Int32.MaxValue;
         internal const int BufferSize = 4096;
@@ -866,12 +861,11 @@ namespace Google.Protobuf
         private bool ContinueArray(uint currentTag)
         {
             uint next = PeekTag();
-            hasNextTag = next != 0;
-            if (hasNextTag)
+            if (next != 0)
             {
                 if (next == currentTag)
                 {
-                    hasNextTag = false;
+                    state.hasNextTag = false;
                     return true;
                 }
             }
@@ -894,12 +888,11 @@ namespace Google.Protobuf
             }
 
             uint next = PeekTag();
-            hasNextTag = next != 0;
-            if (hasNextTag)
+            if (next != 0)
             {
                 if (next == currentTag)
                 {
-                    hasNextTag = false;
+                    state.hasNextTag = false;
                     return true;
                 }
             }
