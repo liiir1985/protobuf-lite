@@ -180,6 +180,28 @@ namespace Google.Protobuf
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="bytes"></param>
+        /// <param name="offset"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        public static ByteString From(byte[] bytes, int offset, int count)
+        {
+            return new ByteString(bytes.AsMemory(offset, count));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="bytes"></param>
+        /// <returns></returns>
+        public static ByteString From(byte[] bytes)
+        {
+            return From(bytes, 0, bytes.Length);
+        }
+
+        /// <summary>
         /// Constructs a <see cref="ByteString" /> from the given array. The contents
         /// are copied, so further modifications to the array will not
         /// be reflected in the returned ByteString.
